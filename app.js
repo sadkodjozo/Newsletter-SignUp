@@ -9,6 +9,8 @@ app.use(express.static('public'));
 
 app.use(express.urlencoded({ extended: true }));
 
+require('dotenv').config()
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/signup.html');
 });
@@ -16,18 +18,18 @@ app.get('/', (req, res) => {
 //Mailchimp Config
 
 mailchimp.setConfig({
-    apiKey: "7c235ef3ce9d00b59411028bad32da92-us13",
-    server: "us13"
+    apiKey: process.env.API_KEY,
+    server: process.env.SERVER
 });
 
+const listId = process.env.LIST_ID;
 
-// POST REQUEST
 app.post('/', (req, res) => {
     const firstName = req.body.fName;
     const lastName = req.body.lName;
     const email = req.body.email;
 
-    const listId = '76691ecaca';
+    //const listId = process.env.LIST_ID;
     const subscribingUser = {
         firstName: firstName,
         lastName: lastName,
@@ -45,7 +47,7 @@ app.post('/', (req, res) => {
                 }
             });
 
-            console.log(response);
+            //console.log(response);
             res.sendFile(__dirname + '/success.html');
             
         } catch (error) {
@@ -55,16 +57,15 @@ app.post('/', (req, res) => {
     };
 
     run();
-});   //End of POST REQUEST
+});   
 
 app.post('/failure', (req, res) => {
     res.redirect('/');
 });
 
 
-//Listening
 app.listen(process.env.PORT || 3000, () => {
-    console.log('Server is listening on port $3000');
+    console.log('Server is listening on port 3000');
 
 
 });
